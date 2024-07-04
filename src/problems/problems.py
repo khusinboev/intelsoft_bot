@@ -27,4 +27,4 @@ def get_buttons_from_db():
 async def save_name(call: CallbackQuery) -> None:
     await call.answer()
     await call.message.delete()
-    await call.message.answer("mana sizning problemingizni yechimi", reply_markup=main_menu)
+    await call.message.answer("Mana sizning problemingizni yechimi", reply_markup=main_menu)

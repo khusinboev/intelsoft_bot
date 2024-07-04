@@ -1,0 +1,3 @@
+TOKEN = "5597490636:AAHiyobYfWKIqdzd8CDPzHoaZes5EiWr1pw"
+GROUP_ID = -1002153624501
+DB_NAME = 'intel_soft.db'
