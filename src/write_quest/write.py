@@ -76,9 +76,9 @@ async def handling_prob(message: Message):
     if message.reply_to_message and message.reply_to_message.from_user.id == bot.id:
         original_message_text = message.reply_to_message.text
         try:
-            await bot.forward_message(chat_id=original_message_text.split(' - ')[0],
-                                      from_chat_id=message.chat.id,
-                                      message_id=message.message_id)
+            await bot.copy_message(chat_id=original_message_text.split(' - ')[0],
+                                   from_chat_id=message.chat.id,
+                                   message_id=message.message_id)
         except Exception as ex:
             print(ex)
             print(original_message_text.split(' - ')[0])
