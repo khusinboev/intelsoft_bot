@@ -17,5 +17,5 @@ products_list.append([types.InlineKeyboardButton(text="Yozma savol berish", call
 products_list = InlineKeyboardBuilder(markup=products_list)
 
 
-back_btn = [[types.KeyboardButton(text="Tugatish va ortga qaytish!")]]
+back_btn = [[types.KeyboardButton(text="So'rovni tugatish")]]
 back_btn = types.ReplyKeyboardMarkup(keyboard=back_btn, resize_keyboard=True)
