@@ -5,6 +5,7 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import Message
 
 from database import cursor, conn
+from main import bot
 from src.buttuns.buttons import main_menu
 router: Router = Router()
 
@@ -22,13 +23,17 @@ async def command_start_handler(message: Message, state: FSMContext) -> None:
         pass
     user_id = message.from_user.id
     users = [idd[0] for idd in cursor.execute("select user_id from users").fetchall()]
-    if message.chat.type in ['supergroup']:
-        pass
-    elif user_id not in users:
-        await state.set_state(Form.name)
-        await message.answer(f"Ismingizni kitiring?")
-    else:
-        await message.answer("Assalomu alaykum, xush kelibsiz. Davom etishingiz mumkin", reply_markup=main_menu)
+    await bot.send_document(chat_id=message.chat.id,
+                            document="BQACAgIAAxkBAAMGZuADmU7lUzXhmjTeFql3iKI1rNwAAn0qAAI57HhKtgcPcTWIIZs2BA",
+                            caption="Video qo'llanma!")
+
+    # if message.chat.type in ['supergroup']:
+    #     pass
+    # elif user_id not in users:
+    #     await state.set_state(Form.name)
+    #     await message.answer(f"Ismingizni kitiring?")
+    # else:
+    #     await message.answer("Assalomu alaykum, xush kelibsiz. Davom etishingiz mumkin", reply_markup=main_menu)
 
 
 @router.message(Form.name)
