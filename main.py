@@ -20,7 +20,7 @@ bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
 @router.message()
 async def command_start_handler(message: Message) -> None:
-    await message.answer(message.video.file_id)
+    # await message.answer(message.video.file_id)
     await bot.send_video(chat_id=message.chat.id,
                          video="BAACAgIAAxkBAAMWZuAoQlWYFHZQFtkdyIVw9VN_kvkAAphaAAL19AABS6S8eKK7OsCDNgQ",
                          caption="Video qo'llanma!")
