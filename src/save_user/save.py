@@ -23,9 +23,6 @@ async def command_start_handler(message: Message, state: FSMContext) -> None:
         pass
     user_id = message.from_user.id
     users = [idd[0] for idd in cursor.execute("select user_id from users").fetchall()]
-    # await bot.send_document(chat_id=message.chat.id,
-    #                         document="BQACAgIAAxkBAAMGZuADmU7lUzXhmjTeFql3iKI1rNwAAn0qAAI57HhKtgcPcTWIIZs2BA",
-    #                         caption="Video qo'llanma!")
 
     if message.chat.type in ['supergroup']:
         pass

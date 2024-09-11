@@ -11,9 +11,8 @@ main_menu = types.ReplyKeyboardMarkup(keyboard=main_menu_kb, resize_keyboard=Tru
 
 products = cursor.execute("select product_name, id from products").fetchall()
 products_list = []
-# for p in products:
-#     products_list.append([types.InlineKeyboardButton(text=str(p[0]), callback_data=f"{p[1]}")])
-products_list.append([types.InlineKeyboardButton(text="TIR", callback_data=f"tir")])
+for p in products:
+    products_list.append([types.InlineKeyboardButton(text=str(p[0]), callback_data=f"{p[1]}")])
 products_list.append([types.InlineKeyboardButton(text="Yozma savol berish", callback_data=f"question")])
 products_list = InlineKeyboardBuilder(markup=products_list)
 
