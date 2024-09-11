@@ -31,16 +31,21 @@ async def person_quest(call: CallbackQuery, state: FSMContext):
 async def person_quest1(message: Message, state: FSMContext):
     msg_text = message.text
     user_id = message.from_user.id
-    name = message.from_user.full_name
     await state.clear()
     await state.set_state(From.problem_text2)
     if msg_text == "So'rovni tugatish":
         await message.answer("So'rov tugatildi, bosh menyu", reply_markup=main_menu)
         await state.clear()
     else:
-        await message.answer("so'rovingiz yuborildi. Tez orada bog'lanamiz")
+        users = cursor.execute("SELECT name, number, region, organization FROM users "
+                               f"WHERE user_id='{user_id}';").fetchone()
+        if users:
+            name, number, region, organization = users
+        else:
+            name, number, region, organization = None, None, None, None
         msg = await bot.send_message(chat_id=GROUP_ID,
-                                     text=str(user_id) + " - <b>" + name + "</b>\n\n",
+                                     text=(str(user_id) + " - <b>" + name + "</b>\n\n" +
+                                           f"Phone: {number}\nRegion: {region}\nTashkilot: {organization}"),
                                      parse_mode='html')
         await bot.copy_message(
             chat_id=GROUP_ID,
@@ -53,13 +58,17 @@ async def person_quest1(message: Message, state: FSMContext):
 async def person_quest1(message: Message, state: FSMContext):
     msg_text = message.text
     user_id = message.from_user.id
-    name = message.from_user.full_name
     if msg_text == "So'rovni tugatish":
         await message.answer("So'rov tugatildi, bosh menyu", reply_markup=main_menu)
         await state.clear()
     else:
+        users = cursor.execute("SELECT name, number, region, organization FROM users "
+                               f"WHERE user_id={user_id};").fetchone()
+        if users: name, number, region, organization = users
+        else: name, number, region, organization = None, None, None, None
         msg = await bot.send_message(chat_id=GROUP_ID,
-                                     text=str(user_id) + " - <b>" + name + "</b>\n\n",
+                                     text=(str(user_id) + " - <b>" + name + "</b>\n\n" +
+                                           f"Phone: {number}\nRegion: {region}\nTashkilot: {organization}"),
                                      parse_mode='html')
         await bot.copy_message(
             chat_id=GROUP_ID,
@@ -83,15 +92,18 @@ async def handling_prob(message: Message):
                                    from_chat_id=message.chat.id,
                                    message_id=message.message_id)
         except Exception as ex:
-            print(ex)
-            print(original_message_text.split(' - ')[0])
             await message.reply("foydalanuvchiga xabar yuborish uchun uni "
-                                "ID va ismi berilgan xabarga javob berish kerak")
+                                "ID va ismi berilgan xabarga javob berish kerak\n\n"
+                                "agar siz ID li xabarga javob qilgan bo'lsangiz ammo yana bu xabarni ko'rayotgan "
+                                "bo'lsangiz katta extimol siz xabarlashmoqchi bo'lgan user botni blocklagan. "
+                                "va unga boshqa xabar yubora olmaysiz")
 
 
 class Form(StatesGroup):
     name = State()
     phone = State()
+    region = State()
+    organization = State()
 
 
 @router.message()
@@ -116,19 +128,37 @@ async def command_start_handler(message: Message, state: FSMContext) -> None:
 async def save_name(message: Message, state: FSMContext) -> None:
     await state.update_data(name=message.text)
     await state.set_state(Form.phone)
-    await message.answer("Ismingiz saqlandi. \n\nTelefon nomeringizni yuboring")
+    await message.answer("Ismingiz saqlandi. \n\nTelefon nomeringizni yuboring?")
 
 
 @router.message(Form.phone)
 async def save_phone(message: Message, state: FSMContext) -> None:
-    data = await state.update_data(language=message.text)
+    await state.update_data(phone=message.text)
+    await state.set_state(Form.region)
+    await message.answer("Telefon nomeringiz saqlandi. \n\nTashkilotingiz qayerda?")
+
+
+@router.message(Form.region)
+async def save_phone(message: Message, state: FSMContext) -> None:
+    await state.update_data(region=message.text)
+    await state.set_state(Form.organization)
+    await message.answer("Tashkilotingizni nomi nima?")
+
+
+@router.message(Form.organization)
+async def save_phone(message: Message, state: FSMContext) -> None:
+    data = await state.update_data(organization=message.text)
+
     name = data["name"]
-    phone = message.text
+    phone = data["phone"]
+    region = data["region"]
+    organization = message.text
+
     user_id = message.from_user.id
     users = cursor.execute("select user_id from users").fetchall()
     if user_id not in users:
-        cursor.execute(f"INSERT INTO users (user_id, name, number) VALUES ({user_id}, '{name}', '{phone}')")
+        cursor.execute(f"INSERT INTO users (user_id, name, number, region, organization) "
+                       f"VALUES ({user_id}, '{name}', '{phone}', '{region}', '{organization}')")
         conn.commit()
     await message.answer(text=f"Xush kelibsiz. Davom etishingiz mumkin", reply_markup=main_menu)
     await state.clear()
-

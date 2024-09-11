@@ -13,6 +13,8 @@ router: Router = Router()
 class Form(StatesGroup):
     name = State()
     phone = State()
+    region = State()
+    organization = State()
 
 
 @router.message(CommandStart())
@@ -37,20 +39,37 @@ async def command_start_handler(message: Message, state: FSMContext) -> None:
 async def save_name(message: Message, state: FSMContext) -> None:
     await state.update_data(name=message.text)
     await state.set_state(Form.phone)
-    await message.answer("Ismingiz saqlandi. \n\nTelefon nomeringizni yuboring")
+    await message.answer("Ismingiz saqlandi. \n\nTelefon nomeringizni yuboring?")
 
 
 @router.message(Form.phone)
 async def save_phone(message: Message, state: FSMContext) -> None:
-    data = await state.update_data(language=message.text)
+    await state.update_data(phone=message.text)
+    await state.set_state(Form.region)
+    await message.answer("Telefon nomeringiz saqlandi. \n\nTashkilotingiz qayerda?")
+
+
+@router.message(Form.region)
+async def save_phone(message: Message, state: FSMContext) -> None:
+    await state.update_data(region=message.text)
+    await state.set_state(Form.organization)
+    await message.answer("Tashkilotingizni nomi nima?")
+
+
+@router.message(Form.organization)
+async def save_phone(message: Message, state: FSMContext) -> None:
+    data = await state.update_data(organization=message.text)
+
     name = data["name"]
-    phone = message.text
+    phone = data["phone"]
+    region = data["region"]
+    organization = message.text
+
     user_id = message.from_user.id
     users = cursor.execute("select user_id from users").fetchall()
     if user_id not in users:
-        cursor.execute(f"INSERT INTO users (user_id, name, number) VALUES ({user_id}, '{name}', '{phone}')")
+        cursor.execute(f"INSERT INTO users (user_id, name, number, region, organization) "
+                       f"VALUES ({user_id}, '{name}', '{phone}', '{region}', '{organization}')")
         conn.commit()
     await message.answer(text=f"Xush kelibsiz. Davom etishingiz mumkin", reply_markup=main_menu)
     await state.clear()
-
-

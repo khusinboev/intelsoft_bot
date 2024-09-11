@@ -7,7 +7,9 @@ cursor = conn.cursor()
 cursor.execute('''CREATE TABLE IF NOT EXISTS users(
              user_id INTEGER PRIMARY KEY AUTOINCREMENT, 
              name TEXT, 
-             number TEXT
+             number TEXT,
+             region TEXT,
+             organization TEXT
              )''')
 conn.commit()
 

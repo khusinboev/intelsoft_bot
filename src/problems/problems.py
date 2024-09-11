@@ -26,5 +26,3 @@ async def save_name(call: CallbackQuery) -> None:
                                    caption="Ekran va urollarni kalibrovka qilish bo'yicha video qo'llanmalar"),
                                    InputMediaVideo(
                                        media="BAACAgIAAxkBAANWZuGHco_ZHYmk2voJri3bri2seh4AAmdWAAJMzwhLWg6B8aVZdL02BA")])
-
-    # await call.message.answer("Mana sizning problemingizni yechimi", reply_markup=main_menu)
