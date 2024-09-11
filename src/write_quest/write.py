@@ -1,11 +1,12 @@
+import sys
+import os
 from aiogram import F, Router, Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import CallbackQuery, Message, UNSET_PARSE_MODE
 
-from config import GROUP_ID
-from main import dp, bot
 from src.buttuns.buttons import main_menu, back_btn
+from config import GROUP_ID, bot
 
 router: Router = Router()
 
