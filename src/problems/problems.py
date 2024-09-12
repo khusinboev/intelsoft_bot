@@ -26,3 +26,12 @@ async def save_name(call: CallbackQuery) -> None:
                                    caption="Ekran va urollarni kalibrovka qilish bo'yicha video qo'llanmalar"),
                                    InputMediaVideo(
                                        media="BAACAgIAAxkBAANWZuGHco_ZHYmk2voJri3bri2seh4AAmdWAAJMzwhLWg6B8aVZdL02BA")])
+
+
+@router.callback_query(F.data == "11")
+async def save_name(call: CallbackQuery) -> None:
+    await call.answer()
+    await call.message.delete()
+    await bot.send_document(chat_id=call.message.chat.id,
+                            document="BQACAgIAAxkBAAIBZGbig_IiQwKzaQa5Bc39A_OOnnyjAALfTAACx2oYS2YjFAsCtDrHNgQ",
+                            caption="Ma'lumotnoma(rus tilida)")
